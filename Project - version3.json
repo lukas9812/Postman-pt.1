@@ -1,0 +1,346 @@
+{
+	"info": {
+		"_postman_id": "8f7cd1f7-16b5-4e5d-a0b1-865ca998c8fa",
+		"name": "Project - Lukas Srovnal",
+		"description": "This testcase is using for creating a new users and gradual verify all of many functions, like update credentials, deleting user etc.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Post user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseBody = JSON.parse(responseBody);\r",
+							"pm.environment.set(\"user_id\", responseBody.data.id);\r",
+							"\r",
+							"var responseBody = responseBody\r",
+							"pm.environment.set(\"user_name\", responseBody.data.name);\r",
+							"\r",
+							"//This variable is using for saving value which is pointed in my environment.\r",
+							"//Always when I use 2 variables in one test, it's necessary to choice another syntax of variable (because i can't parse the document twice.)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "b17a03a3ed9dcd9d2cea0bd109dca5ab72ac36450779adac6d661e4e26d522f6",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"name\":\"Lukas Daněk\",\r\n\"email\": \"attemp20@seznam.cz\",\r\n\"gender\": \"Male\",\r\n\"status\": \"Active\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{website}}/users",
+					"host": [
+						"{{website}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Control of exact user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify wanted user\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.name).to.eql(pm.environment.get(\"user_name\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{website}}/users/{{user_id}}",
+					"host": [
+						"{{website}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change credentials",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "b17a03a3ed9dcd9d2cea0bd109dca5ab72ac36450779adac6d661e4e26d522f6",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"newemail.com\",\r\n    \"name\":\"Adam Srovnal\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{website}}/users/{{user_id}}",
+					"host": [
+						"{{website}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verifying credentials",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var responseBody = JSON.parse(responseBody);\r",
+							"pm.environment.set(\"user_name\", responseBody.data.name);\r",
+							"//variable for verify, if the mail was really changed (but we'll need it in next step).\r",
+							"\r",
+							"var responseBody = responseBody;\r",
+							"pm.environment.set(\"user_email\", responseBody.data.email);\r",
+							"//variable for verify, if the mail was really changed (but we'll need it in next step).\r",
+							"\r",
+							"pm.test(\"Verify wanted user_name after changes\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.name).to.eql(pm.environment.get(\"user_name\"));\r",
+							"});\r",
+							"pm.test(\"Verify wanted user_email after changes\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.email).to.eql(pm.environment.get(\"user_email\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{website}}/users/{{user_id}}",
+					"host": [
+						"{{website}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Removing exact user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify wanted user was deleted\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "b17a03a3ed9dcd9d2cea0bd109dca5ab72ac36450779adac6d661e4e26d522f6",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{website}}/users/{{user_id}}",
+					"host": [
+						"{{website}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify the outputs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"The needed user is not exists.\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.message).to.eql(\"Resource not found\");\r",
+							"});\r",
+							"//This is assurence that the user was delete properly with 2 conditions.\r",
+							"\r",
+							"pm.environment.unset(\"user_id\");\r",
+							"pm.environment.unset(\"user_name\");\r",
+							"pm.environment.unset(\"user_email\");\r",
+							"//For last step, it's necessary to remove all of enviroment variables (If I'll do a next run, there would be a colision between variables.)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{website}}/users/{{user_id}}",
+					"host": [
+						"{{website}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "d7fdea1b99417e73bd758ee5beab0408beb57dada2d5395d8f26992d1b5d5a29",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
